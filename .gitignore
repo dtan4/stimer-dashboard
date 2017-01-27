@@ -34,3 +34,6 @@ _testmain.go
 vendor/
 
 # End of https://www.gitignore.io/api/go
+
+/.vagrant
+/ubuntu-xenial-16.04-cloudimg-console.log
