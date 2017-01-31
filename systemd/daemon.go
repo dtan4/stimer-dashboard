@@ -20,9 +20,11 @@ type Client struct {
 // Timer represents systemd timer
 type Timer struct {
 	UnitName        string    `json:"unit_name"`
+	Schedule        string    `json:"schedule"`
 	LastTriggeredAt time.Time `json:"last_triggered_at"`
 	NextTriggerAt   time.Time `json:"next_trigger_at"`
 	Result          string    `json:"result"`
+	Active          bool      `json:"active"`
 }
 
 // NewClient creates new Client object
@@ -53,6 +55,7 @@ func (c *Client) ListTimers() ([]*Timer, error) {
 
 		timer := &Timer{
 			UnitName: unit.Name,
+			Active:   unit.ActiveState == "active",
 		}
 
 		props, err := c.conn.GetUnitTypeProperties(unit.Name, timerUnitType)
@@ -60,20 +63,31 @@ func (c *Client) ListTimers() ([]*Timer, error) {
 			return []*Timer{}, err
 		}
 
+		if v, ok := props["TimersCalendar"]; ok {
+			if s, ok2 := v.([][]interface{}); ok2 {
+				// []interface {}{"OnCalendar", "*-*-* 06,18:00:00", 0x5475da471b800}
+				if len(s) > 0 && len(s[0]) > 1 {
+					if schedule, ok3 := s[0][1].(string); ok3 {
+						timer.Schedule = schedule
+					}
+				}
+			}
+		}
+
 		if v, ok := props["LastTriggerUSec"]; ok {
-			if lastTriggerUSec, ok := v.(uint64); ok {
+			if lastTriggerUSec, ok2 := v.(uint64); ok2 {
 				timer.LastTriggeredAt = time.Unix(int64(lastTriggerUSec)/1000/1000, 0)
 			}
 		}
 
 		if v, ok := props["NextElapseUSecRealtime"]; ok {
-			if nextElapseUSecRealtime, ok := v.(uint64); ok {
+			if nextElapseUSecRealtime, ok2 := v.(uint64); ok2 {
 				timer.NextTriggerAt = time.Unix(int64(nextElapseUSecRealtime)/1000/1000, 0)
 			}
 		}
 
 		if v, ok := props["Result"]; ok {
-			if result, ok := v.(string); ok {
+			if result, ok2 := v.(string); ok2 {
 				timer.Result = result
 			}
 		}
