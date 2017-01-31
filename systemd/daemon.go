@@ -76,13 +76,21 @@ func (c *Client) ListTimers() ([]*Timer, error) {
 
 		if v, ok := props["LastTriggerUSec"]; ok {
 			if lastTriggerUSec, ok2 := v.(uint64); ok2 {
-				timer.LastTriggeredAt = time.Unix(int64(lastTriggerUSec)/1000/1000, 0)
+				if lastTriggerUSec == 0 {
+					timer.LastTriggeredAt = time.Time{}
+				} else {
+					timer.LastTriggeredAt = time.Unix(int64(lastTriggerUSec)/1000/1000, 0)
+				}
 			}
 		}
 
 		if v, ok := props["NextElapseUSecRealtime"]; ok {
 			if nextElapseUSecRealtime, ok2 := v.(uint64); ok2 {
-				timer.NextTriggerAt = time.Unix(int64(nextElapseUSecRealtime)/1000/1000, 0)
+				if nextElapseUSecRealtime == 0 {
+					timer.NextTriggerAt = time.Time{}
+				} else {
+					timer.NextTriggerAt = time.Unix(int64(nextElapseUSecRealtime)/1000/1000, 0)
+				}
 			}
 		}
 

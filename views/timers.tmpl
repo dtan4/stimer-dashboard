@@ -20,12 +20,12 @@
         </thead>
         <tbody>
           {{ range .timers }}
-          <tr>
+          <tr{{ if .Active }}{{ else }} style="color: #c0c0c0"{{ end }}>
             <td>{{ .UnitName }}</td>
             <td>{{ .Schedule }}</td>
-            <td>{{ .LastTriggeredAt }}</td>
-            <td><span class=" tag is-success">{{ .Result }}</span></td>
-            <td>{{ .NextTriggerAt }}</td>
+            <td>{{ if isZeroSchedule .LastTriggeredAt }}N/A{{ else }}{{ .LastTriggeredAt }}{{ end }}</td>
+            <td><span class=" tag {{ if .Result }}is-success{{ else }}is-danger{{ end }}">{{ .Result }}</span></td>
+            <td>{{ if isZeroSchedule .NextTriggerAt }}N/A{{ else }}{{ .NextTriggerAt }}{{ end }}</td>
           </tr>
           {{ end }}
         </tbody>

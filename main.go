@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 
@@ -20,7 +21,14 @@ func main() {
 	client := systemd.NewClient(conn)
 
 	r := gin.Default()
-	r.LoadHTMLGlob("views/*")
+
+	tmpl, err := template.New("stimer-dashboard").Funcs(templateHelpers).ParseGlob("views/*")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	r.SetHTMLTemplate(tmpl)
 
 	r.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "stimer-dashboard")
