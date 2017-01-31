@@ -1,11 +1,17 @@
-hash: 51a4b821114b4034ebc5c0aa37dac00cca02fba511ea820df55309c7f187b001
-updated: 2017-01-30T11:54:47.70181235+09:00
+hash: 107557b36be0477515051d25664470f5df28e8d73ea654d1b4b26a77d6e08e93
+updated: 2017-01-30T12:09:05.846503023+09:00
 imports:
+- name: github.com/coreos/go-systemd
+  version: 48702e0da86bd25e76cfef347e2adeb434a0d0a6
+  subpackages:
+  - dbus
 - name: github.com/gin-gonic/gin
   version: e2212d40c62a98b388a5eb48ecbdcf88534688ba
   subpackages:
   - binding
   - render
+- name: github.com/godbus/dbus
+  version: 4b24ebee04561bf8a3bcc09aead82062edc56778
 - name: github.com/golang/protobuf
   version: 2402d76f3d41f928c7902a765dfc872356dd3aad
   subpackages:
