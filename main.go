@@ -20,6 +20,7 @@ func main() {
 	client := systemd.NewClient(conn)
 
 	r := gin.Default()
+	r.LoadHTMLGlob("views/*")
 
 	r.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "stimer-dashboard")
@@ -32,7 +33,9 @@ func main() {
 			return
 		}
 
-		c.JSON(http.StatusOK, timers)
+		c.HTML(http.StatusOK, "timers.tmpl", gin.H{
+			"timers": timers,
+		})
 	})
 
 	r.Run(":8080")
